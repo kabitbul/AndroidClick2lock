@@ -12,10 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.cartsapp.SERVER.URLs;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +43,19 @@ public class RegisterActivity extends AppCompatActivity {
         loadData();
         if(acc_token != null && last_token_create != null)
         {
+            SimpleDateFormat dt = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = new Date();
+            try {
+                date = dt.parse(last_token_create);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Date currDate = new Date();
+            long daysGap = TimeUnit.DAYS.convert(currDate.getTime()  - date.getTime(), TimeUnit.MILLISECONDS);
+            //if(daysGap > 7)//create new token update shared pref with token and date
+            // else//valid token
+            //after if go to cart activity
+
             //last_token_create.
         }
         setContentView(R.layout.activity_register);
@@ -114,10 +132,18 @@ public class RegisterActivity extends AppCompatActivity {
     public void saveData(String access_token) {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        Date c = Calendar.getInstance().getTime();
-       // Date simpleDate =new SimpleDateFormat("dd/MM/yyyy").parse(c.toString());
+
+         Date da = new Date();
+          SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate= formatter.format(da);
+        //Date date = dateFormat.for format(da);
+       // String datestr = dateFormat.format(cal.to);
+
+
+
+        // Date simpleDate =new SimpleDateFormat("dd/MM/yyyy").parse(c.toString());
         editor.putString(ACC_TOKEN, access_token);
-        editor.putString(LAST_TOKEN_CREATE,c.toString());
+        editor.putString(LAST_TOKEN_CREATE,strDate);
 
         editor.apply();
     }
@@ -125,6 +151,9 @@ public class RegisterActivity extends AppCompatActivity {
     public void loadData() {
       SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
       acc_token = sharedPreferences.getString(ACC_TOKEN,"");
-      last_token_create = sharedPreferences.getString(LAST_TOKEN_CREATE,"");
+        Date da = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate= formatter.format(da);
+      last_token_create = "13/01/2022";//strDate;//sharedPreferences.getString(LAST_TOKEN_CREATE,"");
     }
 }
